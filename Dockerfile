@@ -103,7 +103,9 @@ ENV ENABLE_CRON=1 \
     STARTUP_ROUTE_CACHE=1 \
     ENABLE_XDEBUG=0 \
     XDEBUG_IDE_KEY=PHPSTORM \
-    XDEBUG_REMOTE_HOST=docker.for.mac.localhost
+    XDEBUG_REMOTE_HOST=docker.for.mac.localhost \
+    PHP_MAX_CHILDREN=2 \
+    ENABLE_OPCACHE=1
 
 COPY root/ /
 
