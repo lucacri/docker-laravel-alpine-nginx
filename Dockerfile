@@ -52,6 +52,7 @@ RUN apk upgrade --update-cache && \
     php7-xmlwriter \
     php7-fileinfo \
     php7-simplexml \
+    php7-iconv \
     ghostscript \
     ghostscript-dev \
     nano \
