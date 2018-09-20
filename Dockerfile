@@ -2,7 +2,7 @@ FROM lucacri/alpine-base:3.8.1
 
 LABEL maintainer="lucacri@gmail.com"
 
-ARG CACHEBUST=20180911
+ARG CACHEBUST=20180920
 
 ARG UID=501
 ARG GID=501
@@ -12,6 +12,8 @@ ARG INSTALL_PHANTOMJS=0
 RUN apk upgrade --update-cache && \
     apk add curl ca-certificates && \
     echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
+    echo "@edge http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
+    echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
     apk update && \
     apk add \
     php7 \
@@ -98,7 +100,8 @@ RUN apk upgrade --update-cache && \
     groupmod -g ${GID} nginx && \
     rm /etc/nginx/conf.d/* && \
     chown -Rf nginx:nginx /var/tmp/nginx && \
-    chown -Rf nginx:nginx /var/lib/nginx
+    chown -Rf nginx:nginx /var/lib/nginx && \
+    composer global require hirak/prestissimo
 
 
 ENV ENABLE_CRON=1 \

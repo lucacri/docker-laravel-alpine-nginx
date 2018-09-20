@@ -9,7 +9,7 @@ build:
 	@echo ""
 	@echo ""
 	@docker build -t ${IMAGE}:${TAG} .
-	@docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
+	# @docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
 
 push:
 	@echo "------------------"
