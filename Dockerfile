@@ -2,7 +2,7 @@ FROM lucacri/alpine-base:3.8.2
 
 LABEL maintainer="lucacri@gmail.com"
 
-ARG CACHEBUST=20180920
+ARG CACHEBUST=20181109
 
 ARG UID=501
 ARG GID=501
@@ -101,7 +101,8 @@ RUN apk upgrade --update-cache && \
     rm /etc/nginx/conf.d/* && \
     chown -Rf nginx:nginx /var/tmp/nginx && \
     chown -Rf nginx:nginx /var/lib/nginx && \
-    composer global require hirak/prestissimo
+    composer global require hirak/prestissimo && \
+    composer global clear-cache
 
 
 ENV ENABLE_CRON=1 \

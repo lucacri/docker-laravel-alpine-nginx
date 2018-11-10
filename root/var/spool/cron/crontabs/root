@@ -1,1 +1,1 @@
-* * * * * /usr/bin/php /var/www/artisan schedule:run >> /var/www/storage/logs/cron.log
+* * * * * /usr/bin/php /var/www/artisan schedule:run
