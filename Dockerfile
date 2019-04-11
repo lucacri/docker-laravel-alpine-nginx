@@ -1,8 +1,8 @@
-FROM lucacri/alpine-base:3.9.2
+FROM lucacri/alpine-base:3.9.3
 
 LABEL maintainer="lucacri@gmail.com"
 
-ARG CACHEBUST=20181210
+ARG CACHEBUST=20190411
 
 ARG UID=501
 ARG GID=501
