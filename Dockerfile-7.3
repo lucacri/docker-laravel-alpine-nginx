@@ -9,53 +9,51 @@ ARG GID=501
 
 ARG INSTALL_PHANTOMJS=0
 
-RUN apk upgrade --update-cache && \
+RUN wget -O /etc/apk/keys/php-alpine.rsa.pub https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub  && \
+    apk upgrade --update-cache && \
     apk add curl ca-certificates && \
+    echo "@php https://dl.bintray.com/php-alpine/v3.9/php-7.3" >> /etc/apk/repositories && \
     echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     echo "@edge http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
     apk update && \
     apk add \
-    php7 \
-    php7-phar \
-    php7-json \
-    php7-openssl \
-    php7-dom \
-    php7-mysqlnd \
-    php7-mysqli \
-    php7-posix \
-    php7-pcntl \
-    php7-pdo \
-    php7-pdo_pgsql \
-    php7-pdo_sqlite \
-    php7-pdo_mysql \
-    php7-common \
-    php7-fpm \
-    php7-bcmath \
-    php7-zip \
-    php7-bz2 \
-    php7-curl \
-    php7-gd \
-    php7-intl \
-    php7-sqlite3 \
-    php7-ctype \
-    php7-tidy \
-    php7-pgsql \
-    php7-xml \
-    php7-mbstring \
-    php7-session \
-    php7-zlib \
-    php7-opcache \
-    php7-soap \
-    php7-xdebug \
-    php7-imagick \
-    php7-exif \
-    php7-tokenizer \
-    php7-xmlwriter \
-    php7-fileinfo \
-    php7-simplexml \
-    php7-xmlreader \
-    php7-iconv \
+    php@php \
+    php-phar@php \
+    php-json@php \
+    php-openssl@php \
+    php-dom@php \
+    php-mysqlnd@php \
+    php-mysqli@php \
+    php-posix@php \
+    php-pcntl@php \
+    php-pdo@php \
+    php-pdo_pgsql@php \
+    php-pdo_sqlite@php \
+    php-pdo_mysql@php \
+    php-common@php \
+    php-fpm@php \
+    php-bcmath@php \
+    php-zip@php \
+    php-bz2@php \
+    php-curl@php \
+    php-gd@php \
+    php-intl@php \
+    php-sqlite3@php \
+    php-ctype@php \
+    php-tidy@php \
+    php-pgsql@php \
+    php-xml@php \
+    php-mbstring@php \
+    php-session@php \
+    php-zlib@php \
+    php-opcache@php \
+    php-soap@php \
+    php-xdebug@php \
+    php-imagick@php \
+    php-exif@php \
+    php-xmlreader@php \
+    php-iconv@php \
     ghostscript \
     ghostscript-dev \
     nano \
