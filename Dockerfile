@@ -56,6 +56,8 @@ RUN apk upgrade --update-cache && \
     php7-simplexml \
     php7-xmlreader \
     php7-iconv \
+    php7-pecl-redis \
+    php7-pecl-igbinary \
     ghostscript \
     ghostscript-dev \
     nano \
