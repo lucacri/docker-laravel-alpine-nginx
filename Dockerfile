@@ -60,6 +60,7 @@ RUN apk upgrade --update-cache && \
     php7-pecl-igbinary \
     ghostscript \
     ghostscript-dev \
+    procps \
     nano \
     nodejs \
     npm \
