@@ -1,3 +1,12 @@
+only-deploy-tags: &only-deploy-tags
+  context: DOCKER_HUB
+  filters:
+    tags:
+      only: /.*/
+    branches:
+      ignore: /.*/
+
+
 version: 2.1
 executors:
   docker-publisher:
@@ -10,7 +19,6 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 18.06.0-ce
-          docker_layer_caching: true
           
       - run:
           name: Make image
@@ -25,116 +33,52 @@ jobs:
           paths:
             - ./image.tar
 
-  publish-patch:
+  tag-and-publish:
     executor: docker-publisher
     steps:
       - attach_workspace:
           at: /tmp/workspace 
       - setup_remote_docker:
           version: 18.06.0-ce
-          docker_layer_caching: true
       - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
       - run:
-          name: Get version
-          command: echo 'export IMAGE_TAG="'$(docker run --rm alpine/semver semver -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+          name: Get versions
+          command: |
+            echo 'export IMAGE_TAG_PATCH="'$(docker run --rm alpine/semver semver -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+            echo 'export IMAGE_TAG_MINOR="'$(docker run --rm alpine/semver minor -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+            echo 'export IMAGE_TAG_MAJOR="'$(docker run --rm alpine/semver major -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+      - run:
+          name: docker login
+          command: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
       - run:
           name: Pushing patch
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG} && docker push ${IMAGE_NAME}:${IMAGE_TAG}
-
-  publish-minor:
-    executor: docker-publisher
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace 
-      - setup_remote_docker:
-          version: 18.06.0-ce
-          docker_layer_caching: true
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image.tar
-      - run:
-          name: Get version
-          command: echo 'export IMAGE_TAG="'$(docker run --rm alpine/semver semver -c minor ${CIRCLE_TAG})'"' >> $BASH_ENV
+           docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG_PATCH} 
+           docker push ${IMAGE_NAME}:${IMAGE_TAG_PATCH}
       - run:
           name: Pushing minor
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG} && docker push ${IMAGE_NAME}:${IMAGE_TAG}
-
-  publish-major:
-    executor: docker-publisher
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace 
-      - setup_remote_docker:
-          version: 18.06.0-ce
-          docker_layer_caching: true
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image.tar
-      - run:
-          name: Get version
-          command: echo 'export IMAGE_TAG="'$(docker run --rm alpine/semver semver -c major ${CIRCLE_TAG})'"' >> $BASH_ENV
+           docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG_MINOR} 
+           docker push ${IMAGE_NAME}:${IMAGE_TAG_MINOR}
       - run:
           name: Pushing major
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG} && docker push ${IMAGE_NAME}:${IMAGE_TAG}
-
-  publish-latest:
-    executor: docker-publisher
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace 
-      - setup_remote_docker:
-          version: 18.06.0-ce
-          docker_layer_caching: true
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/image.tar
+           docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG_MAJOR} 
+           docker push ${IMAGE_NAME}:${IMAGE_TAG_MAJOR}
       - run:
           name: Pushing latest
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-            docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:latest && docker push ${IMAGE_NAME}:latest
+           docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:latest 
+           docker push ${IMAGE_NAME}:latest
+
 workflows:
       version: 2
       build-tag:
         jobs:
-          - build:
-              context: DOCKER_HUB
-              filters:
-                tags:
-                  only: /.*/
-          - publish-patch:
-              context: DOCKER_HUB
+          - build: *only-deploy-tags
+          - tag-and-publish:
+              <<: *only-deploy-tags
               requires:
                 - build
-              filters:
-                tags:
-                  only: /.*/
-          - publish-minor:
-              context: DOCKER_HUB
-              requires:
-                - build
-              filters:
-                tags:
-                  only: /.*/
-          - publish-major:
-              context: DOCKER_HUB
-              requires:
-                - build
-              filters:
-                tags:
-                  only: /.*/
-          - publish-latest:
-              context: DOCKER_HUB
-              requires:
-                - build
-              filters:
-                tags:
-                  only: /.*/
