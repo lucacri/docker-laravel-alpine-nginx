@@ -1,9 +1,11 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+executors:
+  docker-publisher:
     docker:
       - image: circleci/buildpack-deps:stretch
-
+jobs:
+  build:
+    executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker:
@@ -13,7 +15,43 @@ jobs:
       - run:
           name: Make image
           command: docker build --pull --build-arg CACHEBUST=${CIRCLE_SHA1} -t ${IMAGE_NAME}:build .
-
+      
       - run:
-          name: Print the Current Time
-          command: echo ${CIRCLE_TAG} ${CIRCLE_SHA1}
+        name: Archive Docker image
+        command: docker save -o image.tar ${IMAGE_NAME}:build
+      
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+
+  
+  publish-patch:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace 
+      - setup_remote_docker:
+          version: 18.06.0-ce
+          docker_layer_caching: true
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Tag patch
+          run: docker run --rm alpine/semver semver -c -i patch 1.0.0
+
+workflows:
+      version: 2
+      build-tag:
+        jobs:
+          - build:
+              filters:
+                branches:
+                  only: master
+          - publish-latest:
+              requires:
+                - build
+              filters:
+                branches:
+                  only: master
