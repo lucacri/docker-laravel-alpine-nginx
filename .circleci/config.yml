@@ -9,11 +9,11 @@ jobs:
       - setup_remote_docker:
           version: 18.06.0-ce
           docker_layer_caching: true
-
+          
       - run:
           name: Make image
-          command: TAG="1.0.0" make build
+          command: docker build --pull --build-arg CACHEBUST=${CIRCLE_SHA1} -t ${IMAGE_NAME}:build .
 
       - run:
           name: Print the Current Time
-          command: date
+          command: echo ${CIRCLE_TAG} ${CIRCLE_SHA1}
