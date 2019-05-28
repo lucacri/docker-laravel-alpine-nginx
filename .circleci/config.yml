@@ -48,7 +48,7 @@ workflows:
               filters:
                 branches:
                   only: master
-          - publish-latest:
+          - publish-patch:
               requires:
                 - build
               filters:
