@@ -38,7 +38,7 @@ jobs:
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Tag patch
-          run: docker run --rm alpine/semver semver -c -i patch 1.0.0
+          command: docker run --rm alpine/semver semver -c -i patch 1.0.0
 
 workflows:
       version: 2
