@@ -17,15 +17,14 @@ jobs:
           command: docker build --pull --build-arg CACHEBUST=${CIRCLE_SHA1} -t ${IMAGE_NAME}:build .
       
       - run:
-        name: Archive Docker image
-        command: docker save -o image.tar ${IMAGE_NAME}:build
+          name: Archive Docker image
+          command: docker save -o image.tar ${IMAGE_NAME}:build
       
       - persist_to_workspace:
           root: .
           paths:
             - ./image.tar
 
-  
   publish-patch:
     executor: docker-publisher
     steps:
