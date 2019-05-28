@@ -43,30 +43,36 @@ jobs:
       - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
-      - run:
-          name: Get versions
-          command: |
-            echo 'export IMAGE_TAG_PATCH="'$(docker run --rm alpine/semver semver -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
-            echo 'export IMAGE_TAG_MINOR="'$(docker run --rm alpine/semver minor -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
-            echo 'export IMAGE_TAG_MAJOR="'$(docker run --rm alpine/semver major -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+      # - run:
+      #     name: Get versions
+      #     command: |
+      #       echo 'export IMAGE_TAG_PATCH="'$(docker run --rm alpine/semver semver -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+      #       echo 'export IMAGE_TAG_MINOR="'$(docker run --rm alpine/semver minor -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+      #       echo 'export IMAGE_TAG_MAJOR="'$(docker run --rm alpine/semver major -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
       - run:
           name: docker login
           command: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
       - run:
           name: Pushing patch
           command: |
-           docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG_PATCH} 
-           docker push ${IMAGE_NAME}:${IMAGE_TAG_PATCH}
+            IMAGE_TAG=$(docker run --rm alpine/semver semver -c patch ${CIRCLE_TAG})
+            echo ${IMAGE_TAG}
+            docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG} 
+            docker push ${IMAGE_NAME}:${IMAGE_TAG}
       - run:
           name: Pushing minor
           command: |
-           docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG_MINOR} 
-           docker push ${IMAGE_NAME}:${IMAGE_TAG_MINOR}
+            IMAGE_TAG=$(docker run --rm alpine/semver semver -c minor ${CIRCLE_TAG})
+            echo ${IMAGE_TAG}
+            docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG} 
+            docker push ${IMAGE_NAME}:${IMAGE_TAG}
       - run:
           name: Pushing major
           command: |
-           docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG_MAJOR} 
-           docker push ${IMAGE_NAME}:${IMAGE_TAG_MAJOR}
+            IMAGE_TAG=$(docker run --rm alpine/semver semver -c major ${CIRCLE_TAG})
+            echo ${IMAGE_TAG}
+            docker tag ${IMAGE_NAME}:build ${IMAGE_NAME}:${IMAGE_TAG} 
+            docker push ${IMAGE_NAME}:${IMAGE_TAG}
       - run:
           name: Pushing latest
           command: |
