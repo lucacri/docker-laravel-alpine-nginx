@@ -27,6 +27,7 @@ jobs:
 
   publish-patch:
     executor: docker-publisher
+    context: DOCKER_HUB
     steps:
       - attach_workspace:
           at: /tmp/workspace 
@@ -47,6 +48,7 @@ jobs:
 
   publish-minor:
     executor: docker-publisher
+    context: DOCKER_HUB
     steps:
       - attach_workspace:
           at: /tmp/workspace 
@@ -67,6 +69,7 @@ jobs:
 
   publish-major:
     executor: docker-publisher
+    context: DOCKER_HUB
     steps:
       - attach_workspace:
           at: /tmp/workspace 
@@ -87,6 +90,7 @@ jobs:
 
   publish-latest:
     executor: docker-publisher
+    context: DOCKER_HUB
     steps:
       - attach_workspace:
           at: /tmp/workspace 
