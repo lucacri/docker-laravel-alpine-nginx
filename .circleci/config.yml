@@ -80,11 +80,16 @@ jobs:
            docker push ${IMAGE_NAME}:latest
 
 workflows:
-      version: 2
-      build-tag:
-        jobs:
-          - build: *only-deploy-tags
-          - tag-and-publish:
-              <<: *only-deploy-tags
-              requires:
-                - build
+  version: 2
+  build-tag:
+    jobs:
+      - build: 
+          context: DOCKER_HUB
+          filters:
+            branches:
+              only:
+                - master
+      - tag-and-publish:
+          <<: *only-deploy-tags
+          requires:
+            - build
