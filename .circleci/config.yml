@@ -27,7 +27,6 @@ jobs:
 
   publish-patch:
     executor: docker-publisher
-    context: DOCKER_HUB
     steps:
       - attach_workspace:
           at: /tmp/workspace 
@@ -48,7 +47,6 @@ jobs:
 
   publish-minor:
     executor: docker-publisher
-    context: DOCKER_HUB
     steps:
       - attach_workspace:
           at: /tmp/workspace 
@@ -69,7 +67,6 @@ jobs:
 
   publish-major:
     executor: docker-publisher
-    context: DOCKER_HUB
     steps:
       - attach_workspace:
           at: /tmp/workspace 
@@ -90,7 +87,6 @@ jobs:
 
   publish-latest:
     executor: docker-publisher
-    context: DOCKER_HUB
     steps:
       - attach_workspace:
           at: /tmp/workspace 
@@ -110,28 +106,33 @@ workflows:
       build-tag:
         jobs:
           - build:
+              context: DOCKER_HUB
               filters:
                 tags:
                   only: /.*/
           - publish-patch:
+              context: DOCKER_HUB
               requires:
                 - build
               filters:
                 tags:
                   only: /.*/
           - publish-minor:
+              context: DOCKER_HUB
               requires:
                 - build
               filters:
                 tags:
                   only: /.*/
           - publish-major:
+              context: DOCKER_HUB
               requires:
                 - build
               filters:
                 tags:
                   only: /.*/
           - publish-latest:
+              context: DOCKER_HUB
               requires:
                 - build
               filters:
