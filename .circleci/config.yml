@@ -37,20 +37,101 @@ jobs:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
       - run:
-          name: Tag patch
-          command: docker run --rm alpine/semver semver -c -i patch 1.0.0
+          name: Get version
+          command: echo 'export IMAGE_TAG="'$(docker run --rm alpine/semver semver -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+      - run:
+          name: Pushing patch
+          command: docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:build && docker push ${IMAGE_NAME}:${IMAGE_TAG}
 
+  publish-minor:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace 
+      - setup_remote_docker:
+          version: 18.06.0-ce
+          docker_layer_caching: true
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Get version
+          command: echo 'export IMAGE_TAG="'$(docker run --rm alpine/semver semver -c minor ${CIRCLE_TAG})'"' >> $BASH_ENV
+      - run:
+          name: Pushing minor
+          command: docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:build && docker push ${IMAGE_NAME}:${IMAGE_TAG}
+
+  publish-major:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace 
+      - setup_remote_docker:
+          version: 18.06.0-ce
+          docker_layer_caching: true
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Get version
+          command: echo 'export IMAGE_TAG="'$(docker run --rm alpine/semver semver -c major ${CIRCLE_TAG})'"' >> $BASH_ENV
+      - run:
+          name: Pushing major
+          command: docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:build && docker push ${IMAGE_NAME}:${IMAGE_TAG}
+
+  publish-latest:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace 
+      - setup_remote_docker:
+          version: 18.06.0-ce
+          docker_layer_caching: true
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Pushing patch
+          command: docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:build && docker push ${IMAGE_NAME}:latest
 workflows:
       version: 2
       build-tag:
         jobs:
           - build:
               filters:
+                tags:
+                  only: /.*/
                 branches:
-                  only: master
+                  ignore: /.*/
           - publish-patch:
               requires:
                 - build
               filters:
+                tags:
+                  only: /.*/
                 branches:
-                  only: master
+                  ignore: /.*/
+          - publish-minor:
+              requires:
+                - build
+              filters:
+                tags:
+                  only: /.*/
+                branches:
+                  ignore: /.*/
+          - publish-major:
+              requires:
+                - build
+              filters:
+                tags:
+                  only: /.*/
+                branches:
+                  ignore: /.*/
+          - publish-latest:
+              requires:
+                - build
+              filters:
+                tags:
+                  only: /.*/
+                branches:
+                  ignore: /.*/
