@@ -1,6 +1,5 @@
-language: generic
-services:
-  - docker
+language: bash
+services: docker
 env:
   global:
     - IMAGE_NAME=lucacri/docker-laravel-alpine-nginx
