@@ -14,7 +14,7 @@ after_script:
   - docker images
 
 before_deploy:
-  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
   - IMAGE_TAG_PATCH=$(docker run --rm alpine/semver semver -c patch ${TRAVIS_TAG})
   - echo ${IMAGE_TAG_PATCH}
   
