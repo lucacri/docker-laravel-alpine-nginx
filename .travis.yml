@@ -14,24 +14,12 @@ after_script:
 
 before_deploy:
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-  - IMAGE_TAG_PATCH=$(docker run --rm alpine/semver semver -c patch ${TRAVIS_TAG})
-  - echo ${IMAGE_TAG_PATCH}
+  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
+  - docker images
   
 deploy:
   provider: script
   # script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}"
-  script: 
-    - IMAGE_TAG_PATCH=$(docker run --rm alpine/semver semver -c patch ${TRAVIS_TAG})
-    - IMAGE_TAG_MINOR=$(docker run --rm alpine/semver semver -c minor ${TRAVIS_TAG})
-    - IMAGE_TAG_MAJOR=$(docker run --rm alpine/semver semver -c major ${TRAVIS_TAG})
-    - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
-    - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${IMAGE_TAG_PATCH}"
-    - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${IMAGE_TAG_MINOR}"
-    - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${IMAGE_TAG_MAJOR}"
-    - docker images
-    - docker push "${IMAGE_NAME}:latest"
-    - docker push "${IMAGE_NAME}:${IMAGE_TAG_PATCH}"
-    - docker push "${IMAGE_NAME}:${IMAGE_TAG_MINOR}"
-    - docker push "${IMAGE_NAME}:${IMAGE_TAG_MAJOR}"
+  script: bash .travis/deploy.sh ${TRAVIS_TAG}
   on:
     tags: true
