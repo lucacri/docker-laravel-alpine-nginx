@@ -51,8 +51,8 @@ jobs:
           name: Get versions
           command: |
             echo 'export IMAGE_TAG_PATCH="'$(docker run --rm alpine/semver semver -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
-            echo 'export IMAGE_TAG_MINOR="'$(docker run --rm alpine/semver minor -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
-            echo 'export IMAGE_TAG_MAJOR="'$(docker run --rm alpine/semver major -c patch ${CIRCLE_TAG})'"' >> $BASH_ENV
+            echo 'export IMAGE_TAG_MINOR="'$(docker run --rm alpine/semver -c minor ${CIRCLE_TAG})'"' >> $BASH_ENV
+            echo 'export IMAGE_TAG_MAJOR="'$(docker run --rm alpine/semver -c major ${CIRCLE_TAG})'"' >> $BASH_ENV
             source $BASH_ENV
             echo "Patch: ${IMAGE_TAG_PATCH}"
             echo "Minor: ${IMAGE_TAG_MINOR}"
