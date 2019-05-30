@@ -22,12 +22,12 @@ if [ "$ENABLE_HORIZON" -eq "1" ]; then
    cp -Rv /etc/possible-services/horizon /etc/services.d/
 fi
 
-if [ "$HORIZON_SPECIFIC_1" -nq "0" ]; then
+if [ "${HORIZON_SPECIFIC_1}" != "" ] && [ "${HORIZON_SPECIFIC_1}" != "0" ]; then
    echo "Enabling Horizon Specific for ${HORIZON_SPECIFIC_1}";
    cp -Rv /etc/possible-services/horizon-specific-1 /etc/services.d/
 fi
 
-if [ "$HORIZON_SPECIFIC_2" -nq "0" ]; then
+if [ "${HORIZON_SPECIFIC_2}" != "" ] && [ "${HORIZON_SPECIFIC_2}" != "0" ]; then
    echo "Enabling Horizon Specific for ${HORIZON_SPECIFIC_2}";
    cp -Rv /etc/possible-services/horizon-specific-2 /etc/services.d/
 fi
