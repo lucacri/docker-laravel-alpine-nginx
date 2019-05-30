@@ -10,20 +10,22 @@ if: tag IS present
 before_script:
   - docker pull "$IMAGE_NAME" || true
 script:
-  - docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" --build-arg CACHEBUST=${TRAVIS_BUILD_ID} .
+  - curl -o /tmp/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/2.1.0/src/semver && chmod +x /tmp/semver
+  - cp /tmp/semver /usr/local/bin
+  - make build TAG=${TRAVIS_TAG}
 
 after_script:
   - docker images
 
 before_deploy:
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
+  - make tag TAG=${TRAVIS_TAG}
   - docker images
   - curl -o /tmp/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/2.1.0/src/semver && chmod +x /tmp/semver
   
 deploy:
   provider: script
   # script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}"
-  script: bash .travis/deploy.sh ${TRAVIS_TAG}
+  script: make push TAG=${TRAVIS_TAG}
   on:
     tags: true
