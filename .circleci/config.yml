@@ -4,7 +4,8 @@ only-deploy-tags: &only-deploy-tags
     tags:
       only: /.*/
     branches:
-      ignore: /.*/
+      only:
+        - master
 
 
 version: 2.1
@@ -85,10 +86,7 @@ workflows:
     jobs:
       - build: 
           context: DOCKER_HUB
-          filters:
-            branches:
-              only:
-                - master
+          <<: *only-deploy-tags
       - tag-and-publish:
           <<: *only-deploy-tags
           requires:
