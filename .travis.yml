@@ -21,7 +21,6 @@ before_deploy:
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
   - make tag TAG=${TRAVIS_TAG}
   - docker images
-  - curl -o /tmp/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/2.1.0/src/semver && chmod +x /tmp/semver
   
 deploy:
   provider: script
