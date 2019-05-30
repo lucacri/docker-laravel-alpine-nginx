@@ -4,8 +4,7 @@ only-deploy-tags: &only-deploy-tags
     tags:
       only: /.*/
     branches:
-      only:
-        - master
+      ignore: /.*/
 
 
 version: 2.1
