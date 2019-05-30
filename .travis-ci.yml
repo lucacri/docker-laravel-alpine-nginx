@@ -1,0 +1,38 @@
+language: generic
+services:
+  - docker
+env:
+  global:
+    - IMAGE_NAME=lucacri/docker-laravel-alpine-nginx
+
+before_script:
+  - docker pull "$IMAGE_NAME" || true
+script:
+  - docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" --build-arg CACHEBUST=${TRAVIS_BUILD_ID} .
+
+after_script:
+  - docker images
+
+before_deploy:
+  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+  - IMAGE_TAG_PATCH=$(docker run --rm alpine/semver semver -c patch ${TRAVIS_TAG})
+  - echo ${IMAGE_TAG_PATCH}
+  
+deploy:
+  provider: script
+  # script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}"
+  script: 
+    - IMAGE_TAG_PATCH=$(docker run --rm alpine/semver semver -c patch ${TRAVIS_TAG})
+    - IMAGE_TAG_MINOR=$(docker run --rm alpine/semver semver -c minor ${TRAVIS_TAG})
+    - IMAGE_TAG_MAJOR=$(docker run --rm alpine/semver semver -c major ${TRAVIS_TAG})
+    - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
+    - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${IMAGE_TAG_PATCH}"
+    - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${IMAGE_TAG_MINOR}"
+    - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${IMAGE_TAG_MAJOR}"
+    - docker images
+    - docker push "${IMAGE_NAME}:latest"
+    - docker push "${IMAGE_NAME}:${IMAGE_TAG_PATCH}"
+    - docker push "${IMAGE_NAME}:${IMAGE_TAG_MINOR}"
+    - docker push "${IMAGE_NAME}:${IMAGE_TAG_MAJOR}"
+  on:
+    tags: true
