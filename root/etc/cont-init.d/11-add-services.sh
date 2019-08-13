@@ -32,3 +32,7 @@ if [ "${HORIZON_SPECIFIC_2}" != "" ] && [ "${HORIZON_SPECIFIC_2}" != "0" ]; then
    cp -Rv /etc/possible-services/horizon-specific-2 /etc/services.d/
 fi
 
+if [ "$ENABLE_WEBSOCKETS" -eq "1" ]; then
+   echo "Enabling WebSockets";
+   cp -Rv /etc/possible-services/laravel-websockets /etc/services.d/
+fi
