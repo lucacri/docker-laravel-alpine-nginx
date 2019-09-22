@@ -16,6 +16,7 @@ build:
 	@docker build --pull -t ${IMAGE}:${TAG} .
 	@docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
 
+
 push:
 	@echo "------------------"
 	@echo "PUSHING: "

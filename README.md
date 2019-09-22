@@ -1,4 +1,4 @@
-# docker-laravel-alpine
+# docker-laravel-alpine-nginx
 
 This docker image contains anything needed to run a Laravel web application.
 
