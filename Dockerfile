@@ -2,7 +2,7 @@ FROM lucacri/alpine-base:3.10
 
 LABEL maintainer="lucacri@gmail.com"
 
-ARG CACHEBUST=20191028
+ARG CACHEBUST=20191211
 
 ARG UID=501
 ARG GID=501
