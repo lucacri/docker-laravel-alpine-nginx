@@ -1,8 +1,8 @@
-FROM lucacri/alpine-base:3.10
+FROM lucacri/alpine-base:3.11.3
 
 LABEL maintainer="lucacri@gmail.com"
 
-ARG CACHEBUST=20191211
+ARG CACHEBUST=20200212
 
 ARG UID=501
 ARG GID=501
@@ -102,8 +102,8 @@ RUN apk upgrade --update-cache && \
     usermod -u ${UID} nginx && \
     groupmod -g ${GID} nginx && \
     rm /etc/nginx/conf.d/* && \
-    chown -Rf nginx:nginx /var/tmp/nginx && \
-    chown -Rf nginx:nginx /var/lib/nginx && \
+    mkdir -p /var/tmp/nginx && chown -Rf nginx:nginx /var/tmp/nginx || true && \
+    mkdir -p  /var/lib/nginx && chown -Rf nginx:nginx /var/lib/nginx  || true && \
     composer global require hirak/prestissimo && \
     composer global clear-cache
 
