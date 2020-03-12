@@ -8,5 +8,6 @@ Versioning follows classic SEMVER. Anything under the `2` tag (`2`, `2.1`, `2.1.
 
 | Tag | PHP Version |
 |-----|-------------|
+| `3`   | `7.4.x`       |
 | `2`   | `7.3.x`       |
 | `1`   | `7.2.x`       |

@@ -1,63 +1,60 @@
-FROM lucacri/alpine-base:3.11.3
+FROM lucacri/alpine-base:3.11.4
 
 LABEL maintainer="lucacri@gmail.com"
 
-ARG CACHEBUST=20200212
+ARG CACHEBUST=20200312-2
 
 ARG UID=501
 ARG GID=501
 
 ARG INSTALL_PHANTOMJS=0
-
+# php7-fileinfo \
 RUN apk upgrade --update-cache && \
     apk add curl ca-certificates && \
+    wget "https://dl.bintray.com/lucacri/key/php-alpine.rsa.pub" -O /etc/apk/keys/php-alpine.rsa.pub && \
     echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     echo "@edge http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
+    echo "@php7 https://dl.bintray.com/lucacri/v3.11/php-7.4"  >> /etc/apk/repositories && \
     apk update && \
     apk add \
-    php7 \
-    php7-phar \
-    php7-json \
-    php7-openssl \
-    php7-dom \
-    php7-mysqlnd \
-    php7-mysqli \
-    php7-posix \
-    php7-pcntl \
-    php7-pdo \
-    php7-pdo_pgsql \
-    php7-pdo_sqlite \
-    php7-pdo_mysql \
-    php7-common \
-    php7-fpm \
-    php7-bcmath \
-    php7-zip \
-    php7-bz2 \
-    php7-curl \
-    php7-gd \
-    php7-intl \
-    php7-sqlite3 \
-    php7-ctype \
-    php7-tidy \
-    php7-pgsql \
-    php7-xml \
-    php7-mbstring \
-    php7-session \
-    php7-zlib \
-    php7-opcache \
-    php7-soap \
-    php7-xdebug \
-    php7-imagick \
-    php7-exif \
-    php7-tokenizer \
-    php7-xmlwriter \
-    php7-fileinfo \
-    php7-simplexml \
-    php7-xmlreader \
-    php7-iconv \
-    php7-pecl-redis \
-    php7-pecl-igbinary \
+    php7@php7 \
+    php7-phar@php7 \
+    php7-json@php7 \
+    php7-openssl@php7 \
+    php7-dom@php7 \
+    php7-mysqlnd@php7 \
+    php7-mysqli@php7 \
+    php7-posix@php7 \
+    php7-pcntl@php7 \
+    php7-pdo@php7 \
+    php7-pdo_pgsql@php7 \
+    php7-pdo_sqlite@php7 \
+    php7-pdo_mysql@php7 \
+    php7-common@php7 \
+    php7-fpm@php7 \
+    php7-bcmath@php7 \
+    php7-zip@php7 \
+    php7-bz2@php7 \
+    php7-curl@php7 \
+    php7-gd@php7 \
+    php7-intl@php7 \
+    php7-sqlite3@php7 \
+    php7-ctype@php7 \
+    php7-tidy@php7 \
+    php7-pgsql@php7 \
+    php7-xml@php7 \
+    php7-mbstring@php7 \
+    php7-session@php7 \
+    php7-zlib@php7 \
+    php7-opcache@php7 \
+    php7-soap@php7 \
+    php7-xdebug@php7 \
+    php7-imagick@php7 \
+    php7-exif@php7 \
+    php7-xmlreader@php7 \
+    php7-iconv@php7 \
+    php7-redis@php7 \
     ghostscript \
     ghostscript-dev \
     procps \
