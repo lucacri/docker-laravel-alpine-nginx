@@ -55,6 +55,7 @@ RUN apk upgrade --update-cache && \
     php7-xmlreader@php7 \
     php7-iconv@php7 \
     php7-redis@php7 \
+    php7-gettext@php7 \
     ghostscript \
     ghostscript-dev \
     procps \
