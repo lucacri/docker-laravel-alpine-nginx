@@ -103,7 +103,9 @@ RUN apk upgrade --update-cache && \
     mkdir -p /var/tmp/nginx && chown -Rf nginx:nginx /var/tmp/nginx || true && \
     mkdir -p  /var/lib/nginx && chown -Rf nginx:nginx /var/lib/nginx  || true && \
     composer global require hirak/prestissimo && \
-    composer global clear-cache
+    composer global clear-cache && \
+    wget https://github.com/just-containers/socklog-overlay/releases/download/v3.1.0-2/socklog-overlay-amd64.tar.gz -O /tmp/socklog-overlay-amd64.tar.gz && \
+    tar xzf  /tmp/socklog-overlay-amd64.tar.gz -C /
 
 
 ENV ENABLE_CRON=1 \
@@ -121,8 +123,9 @@ ENV ENABLE_CRON=1 \
     XDEBUG_IDE_KEY=PHPSTORM \
     XDEBUG_REMOTE_HOST=docker.for.mac.localhost \
     HORIZON_SPECIFIC_1=0 \
-    HORIZON_SPECIFIC_2=0 
-    
+    HORIZON_SPECIFIC_2=0 \
+    SOCKLOG_TIMESTAMP_FORMAT=
+
 
 COPY root/ /
 
