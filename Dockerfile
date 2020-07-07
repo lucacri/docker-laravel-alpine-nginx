@@ -1,4 +1,4 @@
-FROM lucacri/alpine-base:3.11.5
+FROM lucacri/alpine-base:3.11.6
 
 LABEL maintainer="lucacri@gmail.com"
 
@@ -11,11 +11,11 @@ ARG INSTALL_PHANTOMJS=0
 # php7-fileinfo \
 RUN apk upgrade --update-cache && \
     apk add curl ca-certificates && \
-    wget "https://dl.bintray.com/lucacri/key/php-alpine.rsa.pub" -O /etc/apk/keys/php-alpine.rsa.pub && \
+    wget "https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub" -O /etc/apk/keys/php-alpine.rsa.pub && \
     echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     echo "@edge http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
-    echo "@php7 https://dl.bintray.com/lucacri/v3.11/php-7.4"  >> /etc/apk/repositories && \
+    echo "@php7 https://dl.bintray.com/php-alpine/v3.11/php-7.4"  >> /etc/apk/repositories && \
     apk update && \
     apk add \
     php7@php7 \
@@ -105,7 +105,9 @@ RUN apk upgrade --update-cache && \
     composer global require hirak/prestissimo && \
     composer global clear-cache && \
     wget https://github.com/just-containers/socklog-overlay/releases/download/v3.1.0-2/socklog-overlay-amd64.tar.gz -O /tmp/socklog-overlay-amd64.tar.gz && \
-    tar xzf  /tmp/socklog-overlay-amd64.tar.gz -C /
+    tar xzf  /tmp/socklog-overlay-amd64.tar.gz -C / && \
+    rm /tmp/socklog-overlay-amd64.tar.gz
+
 
 
 ENV ENABLE_CRON=1 \
