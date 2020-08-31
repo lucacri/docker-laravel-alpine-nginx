@@ -1,4 +1,4 @@
-FROM lucacri/alpine-base:3.11.6
+FROM lucacri/alpine-base:3.11.7
 
 LABEL maintainer="lucacri@gmail.com"
 
